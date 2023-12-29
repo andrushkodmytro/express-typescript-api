@@ -1,3 +1,4 @@
 {
-  "PORT": 8081
+  "PORT": 8081,
+  "JWT_SECRET": "tets_secret"
 }
