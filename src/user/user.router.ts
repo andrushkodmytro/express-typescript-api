@@ -6,14 +6,14 @@ const router = Router()
 
 router.post('/register', userController.registerUser)
 
-router.post('/login', userController.login)
+router.post('/login', userController.loginUser)
 
-router.get('/logout', auth, userController.logout)
+router.get('/logout', auth, userController.logoutUser)
 
-router.get('/me', auth, userController.userGet)
+router.get('/me', auth, userController.getUser)
 
-router.patch('/me', auth, userController.userUpdate)
+router.patch('/me', auth, userController.updateUser)
 
-router.patch('/:id', auth, userController.userUpdateByAdmin)
+router.patch('/:id', auth, userController.updateUserByAdmin)
 
 export default router

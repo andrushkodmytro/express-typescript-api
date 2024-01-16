@@ -1,36 +1,11 @@
-import { Schema, model, Model, Types, HydratedDocument } from 'mongoose'
+import { Schema, model, Types } from 'mongoose'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import config from 'config'
 import { CustomError } from '../utils/helpers/errors/customError'
+import { IUser, IUserMethods, UserModel } from './user.type'
 
 const JWT_SECRET = config.get('JWT_SECRET') as string
-
-interface IToken {
-  _id: Types.ObjectId
-  token: string
-}
-
-export interface IUser {
-  email: string
-  password: string
-  firstName: string
-  lastName: string
-  roles: 'user' | 'admin'
-  tokens: IToken[]
-  createdAt: string
-  updatedAt: string
-}
-
-interface IUserMethods {
-  generateAuthToken(remember: boolean | undefined): Promise<{ token: string; expiresIn: number }>
-}
-
-export type UserHydratedDocument = HydratedDocument<IUser, IUserMethods>
-
-interface UserModel extends Model<IUser, object, IUserMethods> {
-  findByCredentials(email: string, password: string): Promise<HydratedDocument<IUser, IUserMethods>>
-}
 
 const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
@@ -59,8 +34,6 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
 )
 
 userSchema.pre('save', async function (next) {
-  //this is user
-
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 8)
   }
@@ -69,7 +42,6 @@ userSchema.pre('save', async function (next) {
 })
 
 userSchema.methods.toJSON = function () {
-  //this is user
   const userObject = this.toObject()
   delete userObject.password
   delete userObject.tokens
@@ -78,7 +50,6 @@ userSchema.methods.toJSON = function () {
 }
 
 userSchema.methods.generateAuthToken = async function (remember) {
-  //this is user
   const delta = remember ? 60 * 60 * 24 * 7 : 60 * 60
 
   const expiresIn = Math.floor(Date.now() / 1000) + delta

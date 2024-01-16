@@ -1,8 +1,6 @@
 export class CustomError extends Error {
   status: string
   isOperational: boolean
-  // temporary
-  code?: number
 
   constructor(
     public message: string,

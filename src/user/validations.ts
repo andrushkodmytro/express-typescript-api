@@ -31,7 +31,6 @@ export const userUpdateScheme = Yup.object()
   })
 
 export const userUpdateByAdminScheme = Yup.object().shape({
-  password: Yup.string().min(8, 'Password is required').max(50, 'Too Long!').required('Password is required'),
   firstName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('First name is required'),
   lastName: Yup.string().min(2, 'Too Short!').max(50, 'Too Long!').required('Last name is required'),
 })

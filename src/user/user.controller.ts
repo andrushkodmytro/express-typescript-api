@@ -23,12 +23,12 @@ const registerUser = asyncHandler(async (req: Request, res: Response, next: Next
     roles: ['user'],
   })
 
-  await user.save()
+  const savedUser = await user.save()
 
-  res.status(201).json({ message: 'User created successfully' })
+  res.status(201).json({ message: 'User created successfully', data: savedUser })
 })
 
-const login = asyncHandler(async (req, res, _next) => {
+const loginUser = asyncHandler(async (req, res, _next) => {
   const { email, password, remember } = await userLoginScheme.validate(req.body, YUP_OPTIONS)
 
   const user = await User.findByCredentials(email, password)
@@ -38,7 +38,7 @@ const login = asyncHandler(async (req, res, _next) => {
   res.send({ user, token, expiresIn })
 })
 
-const logout = asyncHandler(async (req, res, next) => {
+const logoutUser = asyncHandler(async (req, res, next) => {
   const { headers, user } = req
 
   if (headers && headers.authorization) {
@@ -54,17 +54,17 @@ const logout = asyncHandler(async (req, res, next) => {
   next(new CustomError('Not authorized', 401))
 })
 
-const userUpdate = asyncHandler(async (req, res) => {
+const updateUser = asyncHandler(async (req, res) => {
   const validData = await userUpdateScheme.validate(req.body, YUP_OPTIONS)
 
   req.user = Object.assign(req.user, validData)
 
   const updatedUser = await req.user.save()
 
-  res.send({ status: 'success', updatedUser })
+  res.send({ status: 'success', user: updatedUser })
 })
 
-const userUpdateByAdmin = asyncHandler(async (req, res, next) => {
+const updateUserByAdmin = asyncHandler(async (req, res, next) => {
   const validData = await userUpdateByAdminScheme.validate(req.body, YUP_OPTIONS)
 
   if (!req.user.roles.includes('admin')) {
@@ -81,15 +81,15 @@ const userUpdateByAdmin = asyncHandler(async (req, res, next) => {
 
   user = Object.assign(user, validData)
 
-  await user.save()
+  const updatedUser = await user.save()
 
-  res.send({ message: `User updated` })
+  res.send({ message: `User updated`, user: updatedUser })
 })
 
-const userGet = asyncHandler(async (req, res) => {
+const getUser = asyncHandler(async (req, res) => {
   const { user } = req
 
-  res.json(user)
+  res.json({ user })
 })
 
-export default { registerUser, login, logout, userGet, userUpdate, userUpdateByAdmin }
+export default { registerUser, loginUser, logoutUser, getUser, updateUser, updateUserByAdmin }

@@ -1,4 +1,5 @@
 {
   "PORT": 8081,
-  "JWT_SECRET": "tets_secret"
+  "JWT_SECRET": "tets_secret",
+  "DB_URI" : "mongodb://127.0.0.1:27017/node-api"
 }
